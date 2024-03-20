@@ -5,33 +5,67 @@
 package groupchat;
 
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.IOException;
+import VideoCallClient.VideoCallClient;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import org.bytedeco.javacv.FrameGrabber;
-import org.bytedeco.javacv.FrameRecorder;
-import org.bytedeco.javacv.OpenCVFrameGrabber;
-import org.bytedeco.javacv.OpenCVFrameRecorder;
-import org.bytedeco.opencv.opencv_core.IplImage;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 /**
  *
  * @author unkno
  */
 public class Hub extends javax.swing.JFrame {
 
+    private boolean isCallActive = false;
+    private VideoCallClient videoCallClient;
     /**
      * Creates new form Hub
      */
-    public Hub() {
+    public Hub(){
         initComponents();
+        startCallButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                isCallActive = true;
+                try {
+                    startVideoCall();
+                } catch (UnknownHostException ex) {
+                }
+            }
+        });
+        endCallButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (isCallActive) {
+                    endVideoCall();
+                } else {
+                     JOptionPane.showMessageDialog(null, "There is no active call.");
+                }
+            }
+        });
+        try {
+            videoCallClient = new VideoCallClient(myVideoLabel, receivedVideoLabel);
+        } catch (SocketException ex) {
+            Logger.getLogger(Hub.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-
+    private void startVideoCall() throws UnknownHostException {
+        // Start the webcam and display the video feed on the JLabel
+        videoCallClient.startOwnWebcam();
+        Mat videoFrame = videoCallClient.captureVideoFrame();
+        byte[] videoData = videoCallClient.convertVideoFrameToByteArray(videoFrame);
+        InetAddress partnerAddress = InetAddress.getByName("192.168.1.6");
+        videoCallClient.sendVideoToOtherUser(videoData,partnerAddress,6869);
+        videoCallClient.receiveVideoFromOtherUser();
+    }
+    private void endVideoCall() {
+        videoCallClient.stop();
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -42,20 +76,30 @@ public class Hub extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        myVideoDisplayLabel = new javax.swing.JLabel();
-        partnerVideoDisplayLabel = new javax.swing.JLabel();
+        myVideoLabel = new javax.swing.JLabel();
+        receivedVideoLabel = new javax.swing.JLabel();
         startCallButton = new javax.swing.JButton();
         endCallButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        myVideoDisplayLabel.setText("jLabel1");
+        myVideoLabel.setText("jLabel1");
 
-        partnerVideoDisplayLabel.setText("jLabel2");
+        receivedVideoLabel.setText("jLabel2");
 
         startCallButton.setText("Start Call");
+        startCallButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startCallButtonActionPerformed(evt);
+            }
+        });
 
         endCallButton.setText("End Call");
+        endCallButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                endCallButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -63,9 +107,9 @@ public class Hub extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(56, 56, 56)
-                .addComponent(myVideoDisplayLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(myVideoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
-                .addComponent(partnerVideoDisplayLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(receivedVideoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(34, 34, 34))
             .addGroup(layout.createSequentialGroup()
                 .addGap(127, 127, 127)
@@ -79,8 +123,8 @@ public class Hub extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(34, 34, 34)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(partnerVideoDisplayLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(myVideoDisplayLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(receivedVideoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(myVideoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(32, 32, 32)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(startCallButton)
@@ -90,6 +134,14 @@ public class Hub extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void startCallButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startCallButtonActionPerformed
+
+    }//GEN-LAST:event_startCallButtonActionPerformed
+
+    private void endCallButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endCallButtonActionPerformed
+
+    }//GEN-LAST:event_endCallButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -121,15 +173,15 @@ public class Hub extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Hub().setVisible(true);
+                    new Hub().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton endCallButton;
-    private javax.swing.JLabel myVideoDisplayLabel;
-    private javax.swing.JLabel partnerVideoDisplayLabel;
+    private javax.swing.JLabel myVideoLabel;
+    private javax.swing.JLabel receivedVideoLabel;
     private javax.swing.JButton startCallButton;
     // End of variables declaration//GEN-END:variables
 }

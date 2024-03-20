@@ -25,9 +25,9 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
-              <Component id="myVideoDisplayLabel" min="-2" pref="275" max="-2" attributes="0"/>
+              <Component id="myVideoLabel" min="-2" pref="275" max="-2" attributes="0"/>
               <EmptySpace pref="91" max="32767" attributes="0"/>
-              <Component id="partnerVideoDisplayLabel" min="-2" pref="295" max="-2" attributes="0"/>
+              <Component id="receivedVideoLabel" min="-2" pref="295" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
           </Group>
           <Group type="102" alignment="0" attributes="0">
@@ -44,8 +44,8 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="partnerVideoDisplayLabel" alignment="3" min="-2" pref="187" max="-2" attributes="0"/>
-                  <Component id="myVideoDisplayLabel" alignment="3" min="-2" pref="198" max="-2" attributes="0"/>
+                  <Component id="receivedVideoLabel" alignment="3" min="-2" pref="187" max="-2" attributes="0"/>
+                  <Component id="myVideoLabel" alignment="3" min="-2" pref="198" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -58,12 +58,12 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JLabel" name="myVideoDisplayLabel">
+    <Component class="javax.swing.JLabel" name="myVideoLabel">
       <Properties>
         <Property name="text" type="java.lang.String" value="jLabel1"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="partnerVideoDisplayLabel">
+    <Component class="javax.swing.JLabel" name="receivedVideoLabel">
       <Properties>
         <Property name="text" type="java.lang.String" value="jLabel2"/>
       </Properties>
@@ -72,11 +72,17 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Start Call"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="startCallButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="endCallButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="End Call"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="endCallButtonActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
